@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { getProductBySlug } from '../api/productApi';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import './Product.css';
 
 const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -10,7 +11,9 @@ const savings = (orig, curr) => fmt(orig - curr);
 export default function Product() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { handleAddToCart, cartItems } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,6 +33,10 @@ export default function Product() {
   }, [slug]);
 
   const handleAdd = async () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
     if (alreadyInCart) return;
     setAdding(true);
     await handleAddToCart(product.id);

@@ -1,9 +1,21 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 export default function Header() {
   const { toggleCart } = useCart();
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleCartClick = () => {
+    if (isAuthenticated) {
+      toggleCart();
+    } else {
+      navigate('/login', { state: { from: location } });
+    }
+  };
 
   return (
     <div className="header-container">
@@ -18,9 +30,13 @@ export default function Header() {
           <Link to="/sell" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>SELL</Link>
         </div>
 
-        <div className="header-actions">
-          <Link to="/profile" className="header-action wireframe-img" style={{textDecoration: 'none', color: 'inherit'}}>P</Link>
-          <div className="header-action wireframe-img" onClick={toggleCart} style={{cursor: 'pointer'}}>C</div>
+        <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {!isAuthenticated ? (
+            <Link to="/login" className="header-action wireframe-img" style={{textDecoration: 'none', color: 'inherit', fontSize: '11px', width: 'auto', padding: '0 12px'}}>LOGIN</Link>
+          ) : (
+            <Link to="/profile" className="header-action wireframe-img" style={{textDecoration: 'none', color: 'inherit', fontSize: '11px', width: 'auto', padding: '0 12px'}}>PROFILE</Link>
+          )}
+          <div className="header-action wireframe-img" onClick={handleCartClick} style={{cursor: 'pointer'}}>C</div>
         </div>
       </nav>
     </div>

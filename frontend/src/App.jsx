@@ -8,6 +8,7 @@ import Reviews from './components/Reviews'
 import Sell from './components/Sell'
 import Newsletter from './components/Newsletter'
 import Footer from './components/Footer'
+import { AuthProvider } from './context/AuthContext'
 import CartDrawer from './components/CartDrawer'
 import Browse from './pages/Browse'
 import Checkout from './pages/Checkout'
@@ -15,14 +16,17 @@ import Product from './pages/Product'
 import SellPage from './pages/SellPage'
 import Profile from './pages/Profile'
 import About from './pages/About'
+import Login from './pages/Login'
+import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <Header />
-        <CartDrawer />
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Header />
+          <CartDrawer />
         <Routes>
           <Route path="/" element={
             <>
@@ -36,14 +40,28 @@ function App() {
           } />
           <Route path="/browse" element={<Browse />} />
           <Route path="/product/:slug" element={<Product />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/sell" element={<SellPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/sell" element={
+            <ProtectedRoute>
+              <SellPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
           <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
       </Router>
     </CartProvider>
+  </AuthProvider>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getUser, updateUser, getOrders, getTradeIns } from '../api/profileApi';
+import { useAuth } from '../context/AuthContext';
 import './Profile.css';
 
 const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -14,6 +15,8 @@ const STATUS_LABELS = {
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('account');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   // Data state
   const [user,     setUser]     = useState(null);
@@ -96,7 +99,12 @@ export default function Profile() {
                   {tab.label}
                 </button>
               ))}
-              <button className="profile-nav-btn logout-btn">LOG OUT</button>
+              <button 
+                className="profile-nav-btn logout-btn" 
+                onClick={() => { logout(); navigate('/'); }}
+              >
+                LOG OUT
+              </button>
             </nav>
           </aside>
 
