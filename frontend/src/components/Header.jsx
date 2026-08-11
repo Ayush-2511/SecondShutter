@@ -1,13 +1,14 @@
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 export default function Header() {
   return (
     <div className="header-container">
       <nav className="header-nav">
-        <div className="header-logo wireframe-img">LOGO</div>
+        <Link to="/" className="header-logo wireframe-img" style={{textDecoration: 'none', color: 'inherit'}}>LOGO</Link>
         <div className="header-links">
-          <div className="header-link">SHOP</div>
-          <div className="header-link">BROWSE</div>
+          <Link to="/" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>SHOP</Link>
+          <Link to="/browse" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>BROWSE</Link>
           <div className="header-link">ABOUT</div>
           <div className="header-link">REVIEWS</div>
           <div className="header-link">SELL</div>
