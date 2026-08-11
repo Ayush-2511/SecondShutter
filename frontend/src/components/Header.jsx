@@ -13,13 +13,13 @@ export default function Header() {
         <div className="header-links">
           <Link to="/" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>SHOP</Link>
           <Link to="/browse" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>BROWSE</Link>
-          <div className="header-link">ABOUT</div>
+          <Link to="/about" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>ABOUT</Link>
           <div className="header-link">REVIEWS</div>
           <Link to="/sell" className="header-link" style={{textDecoration: 'none', color: 'inherit'}}>SELL</Link>
         </div>
 
         <div className="header-actions">
-          <div className="header-action wireframe-img">S</div>
+          <Link to="/profile" className="header-action wireframe-img" style={{textDecoration: 'none', color: 'inherit'}}>P</Link>
           <div className="header-action wireframe-img" onClick={toggleCart} style={{cursor: 'pointer'}}>C</div>
         </div>
       </nav>

@@ -155,8 +155,39 @@ export const users = [
     email: "john.doe@example.com",
     first_name: "John",
     last_name: "Doe",
+    phone: "+91 98765 43210",
     avatar_url: null,
+    address: {
+      street: "123 Main St",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zip: "400001",
+    },
     created_at: "2025-03-10T10:00:00Z",
+  },
+];
+
+// ─── TRADE-INS ─────────────────────────────────────────────────────────────────
+// status: quote_requested | shipped | inspecting | completed | rejected
+export let trade_ins = [
+  {
+    id: "trade_t509",
+    user_id: "user_001",
+    brand: "FUJIFILM",
+    model: "X-T4",
+    condition: "EXCELLENT",
+    accessories: ["Battery & Charger", "Original Box"],
+    cash_offer: 72000,
+    credit_offer: 79200,
+    status: "inspecting",
+    // Steps in order. A real DB would track timestamps per step.
+    steps: [
+      { key: "quote",      label: "Quote",      completed: true  },
+      { key: "shipped",    label: "Shipped",    completed: true  },
+      { key: "inspecting", label: "Inspecting", completed: false },
+      { key: "paid",       label: "Paid",       completed: false },
+    ],
+    submitted_at: "2026-08-01T10:00:00Z",
   },
 ];
 

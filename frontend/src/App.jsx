@@ -13,6 +13,8 @@ import Browse from './pages/Browse'
 import Checkout from './pages/Checkout'
 import Product from './pages/Product'
 import SellPage from './pages/SellPage'
+import Profile from './pages/Profile'
+import About from './pages/About'
 import './App.css'
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
           <Route path="/product/:slug" element={<Product />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/sell" element={<SellPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
       </Router>
