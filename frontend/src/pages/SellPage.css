@@ -1,0 +1,222 @@
+.sell-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 20px 80px;
+}
+
+.sell-hero-section {
+  text-align: center;
+  margin-bottom: 60px;
+  border-bottom: 4px solid var(--brutal-fg);
+  padding-bottom: 60px;
+}
+
+.sell-page-title {
+  font-size: 64px;
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+}
+
+.sell-page-sub {
+  font-size: 18px;
+  max-width: 700px;
+  margin: 0 auto 48px auto;
+  opacity: 0.9;
+}
+
+.sell-steps-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  text-align: left;
+}
+
+.step-card {
+  border: 2px solid var(--brutal-fg);
+  padding: 24px;
+  background: var(--brutal-light);
+  box-shadow: 4px 4px 0 var(--brutal-fg);
+}
+
+.step-number {
+  font-family: var(--font-pixel);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--brutal-primary);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.step-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.step-card p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+/* Layout */
+.sell-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 60px;
+}
+
+.sell-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sell-section-heading {
+  font-size: 24px;
+  border-bottom: 4px solid var(--brutal-fg);
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+
+.sell-form-label {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.condition-selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.condition-option-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  border: 2px solid var(--brutal-fg);
+  background: var(--brutal-light);
+  cursor: pointer;
+}
+
+.condition-option-card.selected {
+  border-color: var(--brutal-primary);
+  background: var(--brutal-secondary);
+}
+
+.accessories-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Error */
+.sell-error-msg {
+  background: #fecaca;
+  border: 2px solid #ef4444;
+  color: #b91c1c;
+  padding: 12px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Summary Box */
+.quote-box {
+  background: var(--brutal-secondary);
+}
+
+.quote-status-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  border: 2px dashed var(--brutal-fg);
+  font-family: var(--font-pixel);
+  font-size: 12px;
+}
+
+.quote-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.quote-offers {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.offer-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 2px solid var(--brutal-fg);
+  background: var(--brutal-light);
+}
+
+.credit-offer {
+  background: var(--brutal-fg);
+  color: var(--brutal-light);
+}
+
+.offer-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+
+.offer-price {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* Submitted state */
+.trade-submitted-box {
+  text-align: center;
+  border: 4px solid var(--brutal-fg);
+  padding: 48px;
+  background: var(--brutal-light);
+  box-shadow: 8px 8px 0 var(--brutal-fg);
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.tracking-badge {
+  display: inline-block;
+  background: var(--brutal-primary);
+  color: white;
+  border: 2px solid var(--brutal-fg);
+  padding: 6px 16px;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.trade-submitted-box h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.trade-submitted-box p {
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .sell-steps-container {
+    grid-template-columns: 1fr;
+  }
+  .sell-layout {
+    grid-template-columns: 1fr;
+  }
+  .accessories-selector-grid {
+    grid-template-columns: 1fr;
+  }
+  .sell-page-title {
+    font-size: 48px;
+  }
+}

@@ -12,6 +12,7 @@ import CartDrawer from './components/CartDrawer'
 import Browse from './pages/Browse'
 import Checkout from './pages/Checkout'
 import Product from './pages/Product'
+import SellPage from './pages/SellPage'
 import './App.css'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/browse" element={<Browse />} />
           <Route path="/product/:slug" element={<Product />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/sell" element={<SellPage />} />
         </Routes>
         <Footer />
       </Router>
