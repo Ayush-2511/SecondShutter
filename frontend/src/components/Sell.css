@@ -1,0 +1,51 @@
+.sell {
+  padding: var(--section-padding);
+}
+
+.sell-card {
+  background: var(--brutal-secondary);
+  border: 2px solid var(--brutal-fg);
+  box-shadow: 2px 2px 0 var(--brutal-fg);
+  padding: 40px;
+  text-align: center;
+}
+
+.sell-title {
+  font-family: var(--font-pixel);
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.sell-desc {
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.sell-benefits {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.benefit {
+  font-size: 14px;
+}
+
+.sell-input-group {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.sell-input {
+  flex: 1;
+  padding: 16px 20px;
+  background: var(--brutal-light);
+  border: 2px solid var(--brutal-fg);
+  font-family: var(--font-body);
+}
+
+.sell-btn {
+  white-space: nowrap;
+}
