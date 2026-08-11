@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import './Header.css';
 
 export default function Header() {
+  const { toggleCart } = useCart();
+
   return (
     <div className="header-container">
       <nav className="header-nav">
@@ -15,7 +18,7 @@ export default function Header() {
         </div>
         <div className="header-actions">
           <div className="header-action wireframe-img">S</div>
-          <div className="header-action wireframe-img">C</div>
+          <div className="header-action wireframe-img" onClick={toggleCart} style={{cursor: 'pointer'}}>C</div>
         </div>
       </nav>
     </div>

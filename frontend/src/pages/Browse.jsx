@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { productsData } from '../data/mockData';
 import './Browse.css';
 
@@ -75,23 +76,28 @@ export default function Browse() {
 
             <div className="browse-grid">
               {products.map(product => (
-                <div key={product.id} className="product-card-wireframe">
+                <Link
+                  key={product.id}
+                  to={`/product/${product.slug}`}
+                  className="product-card-wireframe"
+                  style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                >
                   {product.badge && <div className="product-badge-wireframe">{product.badge}</div>}
                   <div className="product-image-wireframe wireframe-img">IMAGE PLACEHOLDER</div>
                   <div className="product-info-wireframe">
                     <span className="product-brand-wireframe">{product.brand}</span>
                     <h3 className="product-name-wireframe">{product.name}</h3>
                     <div className="product-meta-wireframe">
-                      <span>{product.shutterCount}</span>
-                      <span>{product.rating}</span>
+                      <span>{product.shutter_count?.toLocaleString('en-IN')} Shutters</span>
+                      <span>★ {product.rating}</span>
                     </div>
                     <div className="product-pricing-wireframe">
-                      <span className="price-original-wireframe">${product.originalPrice}</span>
-                      <span className="price-current-wireframe">${product.currentPrice}</span>
+                      <span className="price-original-wireframe">₹{product.original_price?.toLocaleString('en-IN')}</span>
+                      <span className="price-current-wireframe">₹{product.current_price?.toLocaleString('en-IN')}</span>
                     </div>
-                    <button className="product-cta-wireframe wireframe-btn">ADD TO CART</button>
+                    <div className="product-cta-wireframe wireframe-btn">VIEW ITEM →</div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
