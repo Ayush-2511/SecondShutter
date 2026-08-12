@@ -1,6 +1,6 @@
 import { auth } from '../firebase';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://secondshutter.onrender.com/api';
 
 export async function fetchApi(endpoint, options = {}) {
   let token = null;

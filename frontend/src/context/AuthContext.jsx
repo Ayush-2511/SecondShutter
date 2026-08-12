@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         try {
           // We will create an endpoint POST /api/users/sync 
           // that takes the firebase token in header and upserts to Supabase users table
-          await fetch('http://localhost:5000/api/users/sync', {
+          await fetch('https://secondshutter.onrender.com/api/users/sync', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
       const token = await result.user.getIdToken();
       
       // Await the backend sync BEFORE returning to ensure DB is populated!
-      await fetch('http://localhost:5000/api/users/sync', {
+      await fetch('https://secondshutter.onrender.com/api/users/sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
