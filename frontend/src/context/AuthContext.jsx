@@ -1,36 +1,92 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from '../firebase';
+import { fetchApi } from '../api/config';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [firebaseToken, setFirebaseToken] = useState(null);
 
-export function AuthProvider({ children }) {
-  // Initialize from localStorage or default to null
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('second_shutter_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const token = await firebaseUser.getIdToken();
+        setFirebaseToken(token);
 
-  const login = async (mockUserData) => {
-    // Simulate API delay
-    await new Promise(r => setTimeout(r, 600));
-    const userData = mockUserData || { id: 'user_001', name: 'John Doe', email: 'john@example.com' };
-    setUser(userData);
-    localStorage.setItem('second_shutter_user', JSON.stringify(userData));
+        // Sync with backend to ensure Supabase has the user record
+        try {
+          // We will create an endpoint POST /api/users/sync 
+          // that takes the firebase token in header and upserts to Supabase users table
+          await fetch('http://localhost:5000/api/users/sync', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        } catch (err) {
+          console.error("Failed to sync user with backend:", err);
+        }
+      } else {
+        setUser(null);
+        setFirebaseToken(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const login = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken();
+      
+      // Await the backend sync BEFORE returning to ensure DB is populated!
+      await fetch('http://localhost:5000/api/users/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+    } catch (error) {
+      console.error("Google Login error:", error.message);
+      throw error;
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('second_shutter_user');
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout error:", error.message);
+    }
   };
 
-  const continueAsGuest = () => {
-    // Guest doesn't set a user, they just navigate away from login
+  const getToken = async () => {
+    if (auth.currentUser) {
+      return await auth.currentUser.getIdToken();
+    }
+    return null;
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, continueAsGuest }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated: !!user, 
+      loading, 
+      login, 
+      logout,
+      getToken 
+    }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
+
+export const useAuth = () => useContext(AuthContext);

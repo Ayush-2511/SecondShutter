@@ -1,35 +1,31 @@
-const supabase = require('../supabase');
+const admin = require('../firebaseAdmin');
+const { getAuth } = require('firebase-admin/auth');
 
-/**
- * requireAuth middleware
- *
- * Validates the Supabase JWT token passed in the Authorization header.
- * If valid, attaches the decoded user to req.user.
- * If invalid or missing, returns 401.
- *
- * This runs server-side — no authentication logic lives in the browser.
- */
 async function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-
-    if (error || !user) {
-      return res.status(401).json({ error: 'Invalid or expired token' });
-    }
-
-    req.user = user;
+    // Verify Firebase ID Token
+    const decodedToken = await getAuth().verifyIdToken(token);
+    
+    // Attach the Firebase user info to req.user
+    // Note: The uid is the Firebase UID (28 char string), not the Supabase UUID!
+    req.user = {
+      id: decodedToken.uid,
+      email: decodedToken.email,
+      name: decodedToken.name,
+      avatar_url: decodedToken.picture || null
+    };
+    
     next();
   } catch (err) {
-    console.error('requireAuth error:', err.message);
-    return res.status(401).json({ error: 'Authentication failed' });
+    console.error('Firebase Auth verification failed:', err.message);
+    return res.status(403).json({ error: 'Unauthorized: Invalid token' });
   }
 }
 

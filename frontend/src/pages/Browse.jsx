@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { productsData } from '../data/mockData';
+import { getProducts } from '../api/productsApi';
 import './Browse.css';
 
 const ITEMS_PER_PAGE = 20;
@@ -8,15 +8,23 @@ const ITEMS_PER_PAGE = 20;
 export default function Browse() {
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  const totalPages = Math.ceil(productsData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    // Pagination slice
-    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIdx = startIdx + ITEMS_PER_PAGE;
-    setProducts(productsData.slice(startIdx, endIdx));
-    // Scroll to top on page change
+    setLoading(true);
+    getProducts()
+      .then(data => {
+        setTotalProducts(data.length);
+        const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIdx = startIdx + ITEMS_PER_PAGE;
+        setProducts(data.slice(startIdx, endIdx));
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
 
@@ -65,7 +73,7 @@ export default function Browse() {
             <div className="browse-sort-bar">
               <span className="results-count">
                 Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-
-                {Math.min(currentPage * ITEMS_PER_PAGE, productsData.length)} of {productsData.length} items
+                {Math.min(currentPage * ITEMS_PER_PAGE, totalProducts)} of {totalProducts} items
               </span>
               <select className="wireframe-select">
                 <option>Sort by: Newest First</option>
@@ -87,15 +95,14 @@ export default function Browse() {
                   <div className="product-info-wireframe">
                     <span className="product-brand-wireframe">{product.brand}</span>
                     <h3 className="product-name-wireframe">{product.name}</h3>
-                    <div className="product-meta-wireframe">
-                      <span>{product.shutter_count?.toLocaleString('en-IN')} Shutters</span>
-                      <span>★ {product.rating}</span>
+                    <div className="product-meta-wireframe" style={{ fontSize: '11px', color: '#666' }}>
+                      <span>Condition: {product.condition}</span>
+                      <span>By: {product.seller?.first_name || 'Anonymous'}</span>
                     </div>
-                    <div className="product-pricing-wireframe">
-                      <span className="price-original-wireframe">₹{product.original_price?.toLocaleString('en-IN')}</span>
-                      <span className="price-current-wireframe">₹{product.current_price?.toLocaleString('en-IN')}</span>
+                    <div className="product-pricing-wireframe" style={{ marginTop: '10px' }}>
+                      <span className="price-current-wireframe" style={{ fontSize: '18px', fontWeight: 'bold' }}>₹{product.current_price?.toLocaleString('en-IN')}</span>
                     </div>
-                    <div className="product-cta-wireframe wireframe-btn">VIEW ITEM →</div>
+                    <div className="product-cta-wireframe wireframe-btn" style={{ marginTop: '10px' }}>VIEW ITEM →</div>
                   </div>
                 </Link>
               ))}

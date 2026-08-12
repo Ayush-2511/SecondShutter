@@ -17,6 +17,7 @@ import SellPage from './pages/SellPage'
 import Profile from './pages/Profile'
 import About from './pages/About'
 import Login from './pages/Login'
+import OrderSuccess from './pages/OrderSuccess'
 import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
@@ -44,6 +45,11 @@ function App() {
           <Route path="/checkout" element={
             <ProtectedRoute>
               <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/order-success" element={
+            <ProtectedRoute>
+              <OrderSuccess />
             </ProtectedRoute>
           } />
           <Route path="/sell" element={

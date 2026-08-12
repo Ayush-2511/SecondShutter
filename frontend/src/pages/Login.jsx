@@ -1,56 +1,47 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Get the redirect path if they were sent here from a protected action
-  const from = location.state?.from?.pathname || '/';
-
   const handleGoogleLogin = async () => {
+    setError(null);
     setLoading(true);
+
     try {
       await login();
-      navigate(from, { replace: true });
+      navigate('/');
     } catch (err) {
-      console.error(err);
+      setError(err.message || 'Authentication failed');
       setLoading(false);
     }
   };
 
-  const handleSkip = () => {
-    navigate(from === '/checkout' || from === '/profile' || from === '/sell' ? '/' : from, { replace: true });
-  };
-
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <h1 className="candy-text login-title">ACCESS PORTAL</h1>
-        <p className="login-subtitle">Sign in to track orders, get instant trade-in quotes, and speed through checkout.</p>
-        
-        <div className="login-card">
-          <button 
-            className="google-auth-btn" 
-            onClick={handleGoogleLogin} 
-            disabled={loading}
-          >
-            {loading ? 'AUTHENTICATING...' : 'CONTINUE WITH GOOGLE'}
-          </button>
-          
-          <div className="login-divider">
-            <span>OR</span>
-          </div>
+    <div className="login-page section">
+      <div className="container">
+        <div className="login-card-wireframe" style={{ textAlign: 'center', padding: '60px 40px' }}>
+          <h2 className="candy-text" style={{ fontSize: '32px', marginBottom: '10px' }}>
+            WELCOME BACK
+          </h2>
+          <p style={{ marginBottom: '40px', color: '#666' }}>
+            Sign in to access your marketplace listings.
+          </p>
+
+          {error && <div className="error-message" style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
 
           <button 
-            className="skip-auth-btn" 
-            onClick={handleSkip}
+            onClick={handleGoogleLogin} 
+            className="wireframe-btn login-btn" 
+            disabled={loading} 
+            style={{ width: '100%', maxWidth: '300px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
           >
-            SKIP FOR NOW (GUEST MODE)
+            {loading ? 'CONNECTING...' : 'CONTINUE WITH GOOGLE'}
           </button>
         </div>
       </div>

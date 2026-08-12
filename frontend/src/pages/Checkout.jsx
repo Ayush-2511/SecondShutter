@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { checkoutCart } from '../api/cartApi';
 import './Checkout.css';
 
 const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 
 export default function Checkout() {
-  const { cartSummary, loading, selectedShipping, handleShippingChange } = useCart();
+  const navigate = useNavigate();
+  const { cartSummary, loading, selectedShipping, handleShippingChange, refreshCart } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     newsletter: false,
@@ -24,6 +29,28 @@ export default function Checkout() {
   const handleInput = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleCheckout = async () => {
+    setCheckoutError(null);
+    if (!formData.firstName || !formData.lastName || !formData.street || !formData.city || !formData.state || !formData.zip || !formData.cardNumber) {
+      setCheckoutError("Please fill out all required shipping and payment fields.");
+      return;
+    }
+
+    setIsCheckingOut(true);
+    try {
+      const shippingAddress = `${formData.firstName} ${formData.lastName}, ${formData.street}, ${formData.city}, ${formData.state} ${formData.zip}`;
+      const res = await checkoutCart(shippingAddress, selectedShipping);
+      if (res.success) {
+        await refreshCart();
+        navigate('/order-success');
+      }
+    } catch (err) {
+      setCheckoutError(err.message || 'An error occurred during checkout');
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   if (loading) {
@@ -186,8 +213,19 @@ export default function Checkout() {
               </div>
             </div>
 
-            <button className="pay-btn" id="pay-now-btn">
-              PAY {fmt(summary?.total)}
+            {checkoutError && (
+              <div style={{ color: 'red', marginBottom: '16px', fontSize: '14px', fontWeight: 'bold' }}>
+                {checkoutError}
+              </div>
+            )}
+            <button 
+              className="pay-btn" 
+              id="pay-now-btn" 
+              onClick={handleCheckout} 
+              disabled={isCheckingOut || !summary?.items?.length}
+              style={{ opacity: isCheckingOut ? 0.7 : 1 }}
+            >
+              {isCheckingOut ? 'PROCESSING...' : `PAY ${fmt(summary?.total)}`}
             </button>
             <p className="secure-checkout-badge">🔒 Secure Checkout · 256-bit SSL</p>
           </div>

@@ -21,7 +21,21 @@ router.get('/', requireAuth, async (req, res) => {
 
     if (error) throw error;
 
-    res.json(cartItems);
+    // Flatten product details for the frontend
+    const formattedCart = cartItems.map(item => ({
+      cart_item_id: item.id,
+      added_at: item.added_at,
+      product_id: item.product?.id,
+      slug: item.product?.slug,
+      brand: item.product?.brand,
+      name: item.product?.name,
+      condition: item.product?.condition,
+      current_price: item.product?.current_price,
+      currency: item.product?.currency,
+      image_count: item.product?.image_count
+    }));
+
+    res.json(formattedCart);
   } catch (err) {
     console.error('GET /api/cart error:', err.message);
     res.status(500).json({ error: 'Failed to fetch cart' });
@@ -36,15 +50,16 @@ router.post('/', requireAuth, async (req, res) => {
 
     if (!product_id) return res.status(400).json({ error: 'product_id is required' });
 
-    // Verify the product exists and is still in stock
+    // Verify the product exists, is in stock, and doesn't belong to the user
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('id, in_stock')
+      .select('id, in_stock, seller_id')
       .eq('id', product_id)
       .single();
 
     if (productError || !product) return res.status(404).json({ error: 'Product not found' });
     if (!product.in_stock) return res.status(409).json({ error: 'Product is no longer available' });
+    if (product.seller_id === userId) return res.status(403).json({ error: 'You cannot add your own listings to the cart' });
 
     // Add to cart (UNIQUE constraint handles duplicates gracefully)
     const { data, error } = await supabase

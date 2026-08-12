@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { getProductBySlug } from '../api/productApi';
+import { getProductBySlug } from '../api/productsApi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import './Product.css';
@@ -13,15 +13,16 @@ export default function Product() {
   const navigate = useNavigate();
   const location = useLocation();
   const { handleAddToCart, cartItems } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeThumb, setActiveThumb] = useState(0);
   const [adding, setAdding] = useState(false);
-
-  const alreadyInCart = cartItems.some((ci) => ci.product_id === product?.id);
+  
+  const alreadyInCart = Array.isArray(cartItems) && cartItems.some((ci) => ci.product_id === product?.id);
+  const isOwnListing = isAuthenticated && Boolean(user?.uid) && product?.seller_id === user?.uid;
 
   useEffect(() => {
     setLoading(true);
@@ -92,19 +93,14 @@ export default function Product() {
             <span className="pdp-brand">{product.brand}</span>
             <h1 className="pdp-title">{product.name}</h1>
 
-            {/* Condition + Rating */}
+            {/* Condition */}
             <div className="pdp-meta-badges">
               <span className="pdp-condition-badge">{product.condition}</span>
-              <span className="pdp-rating-badge">
-                {'★'.repeat(Math.round(product.rating))}{'☆'.repeat(5 - Math.round(product.rating))} ({product.review_count})
-              </span>
             </div>
 
             {/* Pricing */}
             <div className="pdp-pricing">
               <span className="pdp-price-current">{fmt(product.current_price)}</span>
-              <span className="pdp-price-original">{fmt(product.original_price)}</span>
-              <span className="pdp-price-save">SAVE {savings(product.original_price, product.current_price)}</span>
             </div>
 
             {/* Description */}
@@ -113,12 +109,13 @@ export default function Product() {
             {/* Actions */}
             <div className="pdp-actions">
               <button
-                className={`pdp-add-btn ${alreadyInCart ? 'in-cart' : ''}`}
+                className={`pdp-add-btn ${alreadyInCart ? 'in-cart' : ''} ${isOwnListing ? 'own-listing' : ''}`}
                 onClick={handleAdd}
-                disabled={alreadyInCart || adding}
+                disabled={alreadyInCart || adding || isOwnListing}
                 id="add-to-cart-btn"
+                style={isOwnListing ? { cursor: 'not-allowed', backgroundColor: '#555', color: '#999', borderColor: '#444' } : {}}
               >
-                {adding ? 'ADDING...' : alreadyInCart ? '✓ IN CART' : 'ADD TO CART'}
+                {isOwnListing ? 'YOUR LISTING' : adding ? 'ADDING...' : alreadyInCart ? '✓ IN CART' : 'ADD TO CART'}
               </button>
             </div>
 
@@ -134,10 +131,8 @@ export default function Product() {
               <span className="pdp-seller-label">SOLD BY</span>
               <div className="pdp-seller-info">
                 <span className="pdp-seller-name">
-                  {product.seller?.name}
-                  {product.seller?.verified && <span className="pdp-verified">✓ VERIFIED</span>}
+                  {product.seller?.first_name} {product.seller?.last_name}
                 </span>
-                <span className="pdp-seller-rating">★ {product.seller?.rating}</span>
               </div>
             </div>
           </div>

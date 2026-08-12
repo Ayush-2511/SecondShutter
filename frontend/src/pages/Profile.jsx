@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUser, updateUser, getOrders, getTradeIns } from '../api/profileApi';
+import { getUser, updateUser, getOrders, getListings } from '../api/profileApi';
 import { useAuth } from '../context/AuthContext';
 import './Profile.css';
 
@@ -21,7 +21,7 @@ export default function Profile() {
   // Data state
   const [user,     setUser]     = useState(null);
   const [orders,   setOrders]   = useState([]);
-  const [tradeIns, setTradeIns] = useState([]);
+  const [listings, setListings] = useState([]);
   const [loading,  setLoading]  = useState(true);
 
   // Account form state (local copy to edit)
@@ -29,10 +29,12 @@ export default function Profile() {
   const [saving,   setSaving]   = useState(false);
   const [saved,    setSaved]    = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState(null);
+
   // Load all data once on mount
   useEffect(() => {
-    Promise.all([getUser(), getOrders(), getTradeIns()])
-      .then(([u, o, t]) => {
+    Promise.all([getUser(), getOrders(), getListings()])
+      .then(([u, o, l]) => {
         setUser(u);
         setFormData({
           first_name: u.first_name,
@@ -41,9 +43,12 @@ export default function Profile() {
           phone:      u.phone ?? '',
         });
         setOrders(o);
-        setTradeIns(t);
+        setListings(l);
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error(err);
+        setErrorMsg(err.message || 'Unknown error occurred while fetching profile.');
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -72,16 +77,27 @@ export default function Profile() {
   return (
     <div className="profile-page">
       <div className="profile-container">
+        {errorMsg && (
+          <div style={{ backgroundColor: '#ffcccc', color: 'red', padding: '10px', marginBottom: '20px', border: '1px solid red' }}>
+            <strong>Error Loading Profile:</strong> {errorMsg}
+          </div>
+        )}
         <h1 className="profile-page-title">MY HQ</h1>
 
         <div className="profile-layout">
           {/* ── SIDEBAR ── */}
           <aside className="profile-sidebar">
             <div className="profile-user-card">
-              <div className="profile-avatar">📷</div>
+              <div className="profile-avatar" style={{ overflow: 'hidden' }}>
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  formData?.first_name ? formData.first_name[0].toUpperCase() : 'U'
+                )}
+              </div>
               <div className="profile-user-info">
-                <strong>{user.first_name} {user.last_name}</strong>
-                <span>{user.email}</span>
+                <strong>{user?.first_name || 'Missing'} {user?.last_name || 'User'}</strong>
+                <span>{user?.email || 'N/A'}</span>
               </div>
             </div>
 
@@ -89,7 +105,7 @@ export default function Profile() {
               {[
                 { id: 'account', label: 'ACCOUNT DETAILS' },
                 { id: 'orders',  label: 'ORDER HISTORY'   },
-                { id: 'trades',  label: 'MY TRADE-INS'    },
+                { id: 'listings', label: 'MY LISTINGS'    },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -121,20 +137,20 @@ export default function Profile() {
                     <div className="form-row">
                       <div className="form-group">
                         <label className="profile-form-label">First Name</label>
-                        <input name="first_name" className="brutal-input" value={formData.first_name} onChange={handleInput} />
+                        <input name="first_name" className="brutal-input" value={formData?.first_name || ''} onChange={handleInput} />
                       </div>
                       <div className="form-group">
                         <label className="profile-form-label">Last Name</label>
-                        <input name="last_name" className="brutal-input" value={formData.last_name} onChange={handleInput} />
+                        <input name="last_name" className="brutal-input" value={formData?.last_name || ''} onChange={handleInput} />
                       </div>
                     </div>
                     <div className="form-group">
                       <label className="profile-form-label">Email Address</label>
-                      <input type="email" name="email" className="brutal-input" value={formData.email} onChange={handleInput} />
+                      <input type="email" name="email" className="brutal-input" value={formData?.email || ''} onChange={handleInput} />
                     </div>
                     <div className="form-group">
                       <label className="profile-form-label">Phone</label>
-                      <input type="tel" name="phone" className="brutal-input" value={formData.phone} onChange={handleInput} />
+                      <input type="tel" name="phone" className="brutal-input" value={formData?.phone || ''} onChange={handleInput} />
                     </div>
                   </section>
 
@@ -191,59 +207,52 @@ export default function Profile() {
               </div>
             )}
 
-            {/* ── TAB: TRADE-INS ── */}
-            {activeTab === 'trades' && (
+            {/* ── TAB: LISTINGS ── */}
+            {activeTab === 'listings' && (
               <div className="profile-tab">
-                <h2 className="profile-section-title">MY TRADE-INS</h2>
-                {tradeIns.length === 0 ? (
+                <h2 className="profile-section-title">MY LISTINGS</h2>
+                {listings.length === 0 ? (
                   <div className="profile-empty">
-                    <p>No trade-ins yet.</p>
-                    <Link to="/sell" className="profile-empty-link">SELL YOUR GEAR →</Link>
+                    <p>You haven't listed any gear yet.</p>
+                    <Link to="/sell" className="profile-empty-link">LIST YOUR GEAR →</Link>
                   </div>
                 ) : (
                   <div className="trade-list">
-                    {tradeIns.map((trade) => (
-                      <div key={trade.id} className="trade-card">
+                    {listings.map((listing) => (
+                      <div key={listing.id} className="trade-card">
                         <div className="trade-card-header">
-                          <span className="order-id">TRADE #{trade.id.replace('trade_', '').toUpperCase()}</span>
-                          <span className="trade-status-badge">{trade.status.toUpperCase()}</span>
+                          <span className="order-id">LISTING #{listing.id.substring(0, 8).toUpperCase()}</span>
+                          <span className={`trade-status-badge ${listing.in_stock ? 'status-delivered' : 'status-pending'}`}>
+                            {listing.in_stock ? 'AVAILABLE' : 'SOLD'}
+                          </span>
                         </div>
-                        <div className="trade-card-body">
+                        <div className="trade-card-body" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
-                            <h4>{trade.brand} {trade.model}</h4>
-                            <span className="order-item-cond">{trade.condition}</span>
+                            <h4>{listing.brand} {listing.name}</h4>
+                            <span className="order-item-cond">{listing.condition}</span>
                           </div>
                           <div className="trade-offers">
                             <div className="trade-offer-row">
-                              <span>Cash Offer</span>
-                              <strong>{fmt(trade.cash_offer)}</strong>
+                              <span>Price</span>
+                              <strong>{fmt(listing.current_price)}</strong>
                             </div>
-                            <div className="trade-offer-row accent">
-                              <span>Store Credit (+10%)</span>
-                              <strong>{fmt(trade.credit_offer)}</strong>
+                            <div className="trade-offer-row muted" style={{ fontSize: '11px', marginTop: '4px' }}>
+                              <span>Listed: {new Date(listing.created_at).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
-                        {/* Progress Steps */}
-                        <div className="trade-progress-bar">
-                          {trade.steps.map((step, idx) => {
-                            const isActive = !step.completed && (idx === 0 || trade.steps[idx - 1]?.completed);
-                            return (
-                              <div
-                                key={step.key}
-                                className={`progress-step ${step.completed ? 'completed' : ''} ${isActive ? 'active' : ''}`}
-                              >
-                                {step.label}
-                              </div>
-                            );
-                          })}
+                        {/* Actions */}
+                        <div className="trade-progress-bar" style={{ padding: '12px 16px', display: 'flex', gap: '12px' }}>
+                          <Link to={`/product/${listing.slug}`} className="wireframe-btn" style={{ padding: '8px 16px', fontSize: '12px', textDecoration: 'none' }}>
+                            VIEW LISTING
+                          </Link>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
                 <Link to="/sell" className="pay-btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '24px' }}>
-                  GET A NEW QUOTE
+                  LIST MORE GEAR
                 </Link>
               </div>
             )}

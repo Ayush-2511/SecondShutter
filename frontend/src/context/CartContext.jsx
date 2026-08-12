@@ -1,6 +1,13 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
-import { getCartSummary, addToCart, removeFromCart } from '../api/cartApi';
-import { TAX_RATE, shipping_rates, CURRENCY_SYMBOL } from '../data/mockDatabase';
+import { getCart, addToCart, removeFromCart } from '../api/cartApi';
+import { useAuth } from './AuthContext';
+
+const TAX_RATE = 0.07;
+const shipping_rates = [
+  { id: "ship_standard", label: "Standard Shipping", eta: "3–5 Business Days", price: 0 },
+  { id: "ship_express",  label: "Express Shipping",  eta: "1–2 Business Days", price: 999 },
+];
+const CURRENCY_SYMBOL = "₹";
 
 const CartContext = createContext();
 
@@ -24,25 +31,36 @@ function computeSummaryLocally(items, shippingRateId) {
 }
 
 export function CartProvider({ children }) {
+  const { isAuthenticated } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartSummary, setCartSummary] = useState(null);
   const [selectedShipping, setSelectedShipping] = useState('ship_standard');
   const [initialLoading, setInitialLoading] = useState(true);
+  
   const selectedShippingRef = useRef(selectedShipping);
   selectedShippingRef.current = selectedShipping;
 
   const refreshCart = useCallback(async () => {
+    if (!isAuthenticated) {
+      setCartItems([]);
+      setCartSummary(null);
+      setInitialLoading(false);
+      return;
+    }
     try {
-      const summary = await getCartSummary(selectedShippingRef.current);
-      setCartItems(summary.items);
-      setCartSummary(summary);
+      const items = await getCart();
+      const safeItems = Array.isArray(items) ? items : [];
+      setCartItems(safeItems);
+      setCartSummary(computeSummaryLocally(safeItems, selectedShippingRef.current));
     } catch (err) {
       console.error('Failed to load cart:', err);
+      setCartItems([]);
+      setCartSummary(null);
     } finally {
       setInitialLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => { refreshCart(); }, [refreshCart]);
 
@@ -58,16 +76,17 @@ export function CartProvider({ children }) {
   const closeCart = () => setIsCartOpen(false);
 
   const handleAddToCart = async (productId) => {
+    if (!isAuthenticated) return;
     await addToCart(productId);
     await refreshCart();
   };
 
-  // Optimistic remove — update local state instantly, sync API in background
-  const handleRemoveFromCart = (cartItemId) => {
-    const updatedItems = cartItems.filter((i) => i.cart_item_id !== cartItemId);
+  // Optimistic remove
+  const handleRemoveFromCart = (cartItemProductId) => {
+    const updatedItems = cartItems.filter((i) => i.product_id !== cartItemProductId);
     setCartItems(updatedItems);
     setCartSummary(computeSummaryLocally(updatedItems, selectedShippingRef.current));
-    removeFromCart(cartItemId).catch(console.error);
+    removeFromCart(cartItemProductId).catch(console.error);
   };
 
   const handleShippingChange = (rateId) => setSelectedShipping(rateId);
@@ -86,6 +105,7 @@ export function CartProvider({ children }) {
         handleAddToCart,
         handleRemoveFromCart,
         handleShippingChange,
+        refreshCart,
       }}
     >
       {children}
