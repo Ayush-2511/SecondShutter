@@ -98,6 +98,22 @@ export default function Product() {
               <span className="pdp-condition-badge">{product.condition}</span>
             </div>
 
+            {/* Seller Info */}
+            {product.seller && (
+              <Link to={`/user/${product.seller.id}`} className="pdp-seller-badge" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px', marginTop: '16px', padding: '8px 12px', border: '1px solid #ddd', borderRadius: '40px', color: 'inherit' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#eee', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {product.seller.avatar_url ? (
+                    <img src={product.seller.avatar_url} alt={product.seller.first_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{product.seller.first_name?.[0]}</span>
+                  )}
+                </div>
+                <span style={{ fontSize: '14px', fontWeight: '500' }}>
+                  Sold by {product.seller.first_name} {product.seller.last_name}
+                </span>
+              </Link>
+            )}
+
             {/* Pricing */}
             <div className="pdp-pricing">
               <span className="pdp-price-current">{fmt(product.current_price)}</span>

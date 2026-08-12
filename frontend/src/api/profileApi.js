@@ -18,3 +18,11 @@ export async function getOrders() {
 export async function getListings() {
   return fetchApi('/users/me/listings');
 }
+
+export async function getPublicProfile(userId) {
+  return fetchApi(`/users/${userId}`);
+}
+
+export async function getPublicListings(userId) {
+  return fetchApi(`/users/${userId}/listings`);
+}

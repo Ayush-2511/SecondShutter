@@ -1,5 +1,5 @@
 .browse-page {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
   color: var(--brutal-fg);
 }
 
@@ -54,7 +54,7 @@
 }
 
 .filter-title {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 14px;
   border-bottom: 2px solid var(--brutal-fg);
   padding-bottom: 8px;
@@ -85,7 +85,7 @@
 }
 
 .results-count {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 12px;
 }
 
@@ -93,7 +93,7 @@
   padding: 12px 16px;
   border: 2px solid var(--brutal-fg);
   background: var(--brutal-light);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 12px;
 }
 
@@ -120,7 +120,7 @@
   background: var(--brutal-fg);
   color: var(--brutal-light);
   padding: 4px 12px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 10px;
   font-weight: bold;
 }
@@ -140,7 +140,7 @@
 }
 
 .product-brand-wireframe {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 10px;
   color: var(--brutal-fg);
   margin-bottom: 8px;
@@ -155,7 +155,7 @@
 .product-meta-wireframe {
   display: flex;
   justify-content: space-between;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 10px;
   padding-bottom: 16px;
   border-bottom: 2px solid var(--brutal-fg);
@@ -167,7 +167,7 @@
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 24px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
 }
 
 .price-current-wireframe {
@@ -203,7 +203,7 @@
   justify-content: center;
   border: 2px solid var(--brutal-fg);
   background: var(--brutal-light);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-pixel);
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;

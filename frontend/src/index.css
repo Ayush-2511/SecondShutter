@@ -3,6 +3,10 @@
    Global CSS & Reset
    ============================================ */
 
+html {
+    scroll-behavior: smooth;
+}
+
 :root {
     /* Brutalist Palette */
     --brutal-bg: #f9f8f6;
@@ -13,8 +17,8 @@
     --brutal-muted: #d4d0c8;
     
     /* Fonts */
-    --font-pixel: 'Courier New', monospace;
-    --font-body: 'Arial', sans-serif;
+    --font-pixel: 'Silkscreen', 'Courier New', monospace;
+    --font-body: 'Space Grotesk', 'Arial', sans-serif;
 
     /* Spacing */
     --section-padding: 80px 40px;
@@ -75,4 +79,17 @@ img {
     font-family: var(--font-pixel);
     font-weight: bold;
     font-size: 14px;
+}
+
+/* Micro Animations */
+.btn {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px var(--brutal-fg);
+}
+.btn:active {
+    transform: translateY(2px);
+    box-shadow: 0px 0px 0px var(--brutal-fg);
 }

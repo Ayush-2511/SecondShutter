@@ -129,4 +129,39 @@ router.get('/me/listings', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/users/:id — get public profile for a user
+router.get('/:id', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, first_name, last_name, avatar_url, created_at')
+      .eq('id', req.params.id)
+      .single();
+
+    if (error || !data) return res.status(404).json({ error: 'User not found' });
+    res.json(data);
+  } catch (err) {
+    console.error('GET /api/users/:id error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch public profile' });
+  }
+});
+
+// GET /api/users/:id/listings — get public listings for a user (sold and unsold)
+router.get('/:id/listings', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('seller_id', req.params.id)
+      .order('in_stock', { ascending: false }) // In-stock first
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('GET /api/users/:id/listings error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch user listings' });
+  }
+});
+
 module.exports = router;

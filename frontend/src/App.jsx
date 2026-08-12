@@ -18,6 +18,7 @@ import Profile from './pages/Profile'
 import About from './pages/About'
 import Login from './pages/Login'
 import OrderSuccess from './pages/OrderSuccess'
+import SellerProfile from './pages/SellerProfile'
 import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
@@ -41,6 +42,7 @@ function App() {
           } />
           <Route path="/browse" element={<Browse />} />
           <Route path="/product/:slug" element={<Product />} />
+          <Route path="/user/:id" element={<SellerProfile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/checkout" element={
             <ProtectedRoute>

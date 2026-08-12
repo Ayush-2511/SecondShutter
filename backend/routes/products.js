@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     let query = supabase
       .from('products')
       // Join with users table to get real seller information
-      .select('*, seller:users(id, first_name, last_name)')
+      .select('*, seller:users(id, first_name, last_name, avatar_url)')
       .eq('in_stock', true);
 
     if (category) query = query.eq('category', category);
@@ -37,7 +37,7 @@ router.get('/:slug', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('*, seller:users(id, first_name, last_name)')
+      .select('*, seller:users(id, first_name, last_name, avatar_url)')
       .eq('slug', req.params.slug)
       .single();
 
