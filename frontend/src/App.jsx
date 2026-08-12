@@ -4,11 +4,12 @@ import Header from './components/Header'
 import Hero from './components/Hero'
 import Shop from './components/Shop'
 import Categories from './components/Categories'
-import Reviews from './components/Reviews'
 import Sell from './components/Sell'
 import Newsletter from './components/Newsletter'
 import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
+import SmoothScroll from './components/SmoothScroll'
+import ScrollToTop from './components/ScrollToTop'
 import CartDrawer from './components/CartDrawer'
 import Browse from './pages/Browse'
 import Checkout from './pages/Checkout'
@@ -26,50 +27,52 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
-          <Header />
-          <CartDrawer />
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero />
-              <Shop />
-              <Categories />
-              <Reviews />
-              <Sell />
-              <Newsletter />
-            </>
-          } />
-          <Route path="/browse" element={<Browse />} />
-          <Route path="/product/:slug" element={<Product />} />
-          <Route path="/user/:id" element={<SellerProfile />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/checkout" element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          } />
-          <Route path="/order-success" element={
-            <ProtectedRoute>
-              <OrderSuccess />
-            </ProtectedRoute>
-          } />
-          <Route path="/sell" element={
-            <ProtectedRoute>
-              <SellPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="/about" element={<About />} />
-        </Routes>
-        <Footer />
-      </Router>
-    </CartProvider>
-  </AuthProvider>
+        <SmoothScroll>
+          <Router>
+            <ScrollToTop />
+            <Header />
+            <CartDrawer />
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <Hero />
+                  <Shop />
+                  <Categories />
+                  <Sell />
+                  <Newsletter />
+                </>
+              } />
+              <Route path="/browse" element={<Browse />} />
+              <Route path="/product/:slug" element={<Product />} />
+              <Route path="/user/:id" element={<SellerProfile />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/checkout" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+              <Route path="/order-success" element={
+                <ProtectedRoute>
+                  <OrderSuccess />
+                </ProtectedRoute>
+              } />
+              <Route path="/sell" element={
+                <ProtectedRoute>
+                  <SellPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="/about" element={<About />} />
+            </Routes>
+            <Footer />
+          </Router>
+        </SmoothScroll>
+      </CartProvider>
+    </AuthProvider>
   )
 }
 

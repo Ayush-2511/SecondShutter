@@ -11,6 +11,9 @@ export async function getProducts(filters = {}) {
   if (filters.sort) {
     params.append('sort', filters.sort);
   }
+  if (filters.q) {
+    params.append('q', filters.q);
+  }
 
   const queryString = params.toString();
   return fetchApi(`/products${queryString ? `?${queryString}` : ''}`);

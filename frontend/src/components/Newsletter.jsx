@@ -17,13 +17,17 @@ export default function Newsletter() {
 
     gsap.set(card, { y: 60, opacity: 0 });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: el,
       start: 'top 90%',
       onEnter: () => {
         gsap.to(card, { y: 0, opacity: 1, duration: 1.2, ease: 'expo.out' });
       }
     });
+
+    return () => {
+      trigger.kill();
+    };
   }, []);
 
   return (

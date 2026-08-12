@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { LogIn } from 'lucide-react';
 import './Login.css';
 
 export default function Login() {
@@ -23,25 +24,38 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page section">
-      <div className="container">
-        <div className="login-card-wireframe" style={{ textAlign: 'center', padding: '60px 40px' }}>
-          <h2 className="candy-text" style={{ fontSize: '32px', marginBottom: '10px' }}>
-            WELCOME BACK
-          </h2>
-          <p style={{ marginBottom: '40px', color: '#666' }}>
-            Sign in to access your marketplace listings.
-          </p>
+    <div className="login-page section" style={{ paddingTop: '160px' }}>
+      <div className="login-container">
+        <span className="section-tag" style={{ justifyContent: 'center' }}>◆ MEMBERS ONLY</span>
+        <h2 className="login-title">
+          WELCOME BACK
+        </h2>
+        <p className="login-subtitle">
+          Sign in to access your marketplace listings, view orders, and sell gear.
+        </p>
 
-          {error && <div className="error-message" style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
+        <div className="login-card">
+          {error && <div className="error-message" style={{ margin: 0 }}>{error}</div>}
 
           <button 
             onClick={handleGoogleLogin} 
-            className="wireframe-btn login-btn" 
+            className="google-auth-btn" 
             disabled={loading} 
-            style={{ width: '100%', maxWidth: '300px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}
           >
-            {loading ? 'CONNECTING...' : 'CONTINUE WITH GOOGLE'}
+            {loading ? 'CONNECTING...' : (
+              <>
+                <LogIn size={20} strokeWidth={2.5} /> CONTINUE WITH GOOGLE
+              </>
+            )}
+          </button>
+
+          <div className="login-divider">
+            <span>OR</span>
+          </div>
+
+          <button className="skip-auth-btn" onClick={() => navigate('/browse')}>
+            CONTINUE BROWSING AS GUEST
           </button>
         </div>
       </div>

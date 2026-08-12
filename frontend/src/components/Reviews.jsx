@@ -19,7 +19,7 @@ export default function Reviews() {
     gsap.set(header, { y: 40, opacity: 0 });
     gsap.set(cards, { y: 60, opacity: 0 });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: el,
       start: 'top 85%',
       onEnter: () => {
@@ -28,6 +28,10 @@ export default function Reviews() {
           .to(cards, { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: 'expo.out' }, "-=0.8");
       }
     });
+
+    return () => {
+      trigger.kill();
+    };
   }, []);
 
   return (

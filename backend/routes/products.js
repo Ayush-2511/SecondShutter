@@ -6,7 +6,7 @@ const router = express.Router();
 // GET /api/products — list all in-stock products
 router.get('/', async (req, res) => {
   try {
-    const { category, brand, sort } = req.query;
+    const { category, brand, sort, q } = req.query;
 
     let query = supabase
       .from('products')
@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
 
     if (category) query = query.eq('category', category);
     if (brand) query = query.ilike('brand', brand);
+    if (q) query = query.or(`name.ilike.%${q}%,description.ilike.%${q}%`);
 
     // Sorting
     if (sort === 'price_asc') query = query.order('current_price', { ascending: true });
@@ -53,10 +54,12 @@ router.get('/:slug', async (req, res) => {
 // POST /api/products — create a new listing (marketplace)
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { name, brand, category, condition, condition_note, current_price, description } = req.body;
+    const { name, brand, category, condition, condition_note, current_price, description, image_urls } = req.body;
     
     // Generate a simple slug from name and timestamp
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+    
+    const validImageUrls = Array.isArray(image_urls) ? image_urls.filter(url => url.trim() !== '') : [];
 
     const newProduct = {
       slug,
@@ -70,7 +73,8 @@ router.post('/', requireAuth, async (req, res) => {
       description,
       seller_id: req.user.id, // Tie to the authenticated user!
       in_stock: true,
-      image_count: 1
+      image_urls: validImageUrls,
+      image_count: validImageUrls.length > 0 ? validImageUrls.length : 1
     };
 
     const { data, error } = await supabase

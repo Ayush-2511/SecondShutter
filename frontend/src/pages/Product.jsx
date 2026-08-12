@@ -71,17 +71,26 @@ export default function Product() {
 
           {/* ── LEFT: GALLERY ── */}
           <div className="pdp-gallery">
-            <div className="pdp-gallery-main wireframe-img">
-              IMG {activeThumb + 1}
+            <div className="pdp-gallery-main wireframe-img" style={{ overflow: 'hidden', backgroundColor: 'var(--brutal-light)', padding: 0 }}>
+              {product.image_urls && product.image_urls.length > 0 ? (
+                <img src={product.image_urls[activeThumb]} alt={`${product.name} - View ${activeThumb + 1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              ) : (
+                `IMG ${activeThumb + 1}`
+              )}
             </div>
             <div className="pdp-thumbnails">
-              {Array.from({ length: thumbCount }).map((_, i) => (
+              {Array.from({ length: product.image_urls?.length || product.image_count || 3 }).map((_, i) => (
                 <div
                   key={i}
                   className={`pdp-thumb wireframe-img ${activeThumb === i ? 'active' : ''}`}
                   onClick={() => setActiveThumb(i)}
+                  style={{ overflow: 'hidden', padding: 0, backgroundColor: 'var(--brutal-light)' }}
                 >
-                  {i + 1}
+                  {product.image_urls && product.image_urls[i] ? (
+                    <img src={product.image_urls[i]} alt="Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    i + 1
+                  )}
                 </div>
               ))}
             </div>

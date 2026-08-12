@@ -19,7 +19,7 @@ export default function Sell() {
     gsap.set(card, { scale: 0.95, y: 30, opacity: 0 });
     gsap.set(items, { y: 20, opacity: 0 });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: el,
       start: 'top 85%',
       onEnter: () => {
@@ -28,6 +28,10 @@ export default function Sell() {
           .to(items, { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: 'expo.out' }, "-=0.8");
       }
     });
+
+    return () => {
+      trigger.kill();
+    };
   }, []);
 
   return (

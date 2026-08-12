@@ -2,22 +2,7 @@
   padding: var(--section-padding);
 }
 
-.section-header {
-  margin-bottom: 60px;
-}
 
-.section-tag {
-  font-family: var(--font-pixel);
-  font-size: 10px;
-  color: var(--brutal-fg);
-  display: block;
-  margin-bottom: 16px;
-}
-
-.section-title {
-  font-family: var(--font-pixel);
-  font-size: 40px;
-}
 
 .products-grid {
   display: grid;

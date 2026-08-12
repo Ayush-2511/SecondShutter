@@ -229,32 +229,17 @@ const PillNav = ({
     <div className="pill-nav-container">
       <nav className={`pill-nav ${className}`} aria-label="Primary" style={cssVars}>
         {logo && (
-          isRouterLink(items?.[0]?.href) ? (
-            <Link
-              className="pill-logo"
-              to={items[0].href}
-              aria-label="Home"
-              onMouseEnter={handleLogoEnter}
-              role="menuitem"
-              ref={el => {
-                logoRef.current = el;
-              }}
-            >
-              <img src={logo} alt={logoAlt} ref={logoImgRef} />
-            </Link>
-          ) : (
-            <a
-              className="pill-logo"
-              href={items?.[0]?.href || '#'}
-              aria-label="Home"
-              onMouseEnter={handleLogoEnter}
-              ref={el => {
-                logoRef.current = el;
-              }}
-            >
-              <img src={logo} alt={logoAlt} ref={logoImgRef} />
-            </a>
-          )
+          <Link
+            className="pill-logo"
+            to="/"
+            aria-label="Home"
+            onMouseEnter={handleLogoEnter}
+            ref={el => {
+              logoRef.current = el;
+            }}
+          >
+            {typeof logo === 'string' ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div ref={logoImgRef} style={{ display: 'flex', alignItems: 'center' }}>{logo}</div>}
+          </Link>
         )}
 
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>

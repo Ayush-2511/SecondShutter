@@ -22,16 +22,42 @@
 .browse-search {
   display: flex;
   border: 2px solid var(--brutal-fg);
+  box-shadow: 4px 4px 0px var(--brutal-fg);
+  background: var(--brutal-light);
 }
 
 .browse-search-input {
   width: 300px;
-  padding: 12px 20px;
+  padding: 14px 20px;
   border: none;
-  border-right: 2px solid var(--brutal-fg);
-  font-family: inherit;
+  font-family: var(--font-body);
   font-size: 16px;
-  background: var(--brutal-light);
+  background: transparent;
+  outline: none;
+}
+
+.browse-search-input::placeholder {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: #666;
+}
+
+.search-submit-btn {
+  background: var(--brutal-fg);
+  color: var(--brutal-bg);
+  border: none;
+  border-left: 2px solid var(--brutal-fg);
+  padding: 0 24px;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-submit-btn:hover {
+  background: var(--brutal-primary);
+  color: var(--brutal-fg);
 }
 
 .browse-layout {

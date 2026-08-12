@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User, Aperture } from 'lucide-react';
 import PillNav from './PillNav';
 import './Header.css';
 
@@ -60,6 +60,8 @@ export default function Header() {
     <>
       {/* We only render the PillNav, which encapsulates the floating logic in PillNav.css */}
       <PillNav 
+        logo={<Aperture size={24} strokeWidth={2} />}
+        logoAlt="SecondShutter Home"
         items={navItems} 
         activeHref={location.pathname}
         baseColor="#c2573a"

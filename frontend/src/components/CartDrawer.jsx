@@ -51,7 +51,7 @@ export default function CartDrawer() {
                   </div>
                   <button
                     className="remove-item"
-                    onClick={() => handleRemoveFromCart(item.cart_item_id)}
+                    onClick={() => handleRemoveFromCart(item.product_id)}
                     aria-label={`Remove ${item.name}`}
                   >✕</button>
                 </div>

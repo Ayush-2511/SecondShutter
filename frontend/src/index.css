@@ -15,6 +15,7 @@ html {
     --brutal-secondary: #eeebe3;
     --brutal-light: #ffffff;
     --brutal-muted: #d4d0c8;
+    --brutal-radius: 8px;
     
     /* Fonts */
     --font-pixel: 'Silkscreen', 'Courier New', monospace;
@@ -79,6 +80,15 @@ img {
     font-family: var(--font-pixel);
     font-weight: bold;
     font-size: 14px;
+    border-radius: var(--brutal-radius);
+}
+
+/* Global Border Radius */
+.product-card, .category-card, .review-card, .newsletter-card, .login-card, 
+.browse-search, .browse-search-input, .cart-drawer, .btn, .pill-action-dropdown,
+.checkout-summary, .product-image, .sell-card, .search-submit-btn,
+.google-auth-btn {
+    border-radius: var(--brutal-radius);
 }
 
 /* Micro Animations */
@@ -92,4 +102,22 @@ img {
 .btn:active {
     transform: translateY(2px);
     box-shadow: 0px 0px 0px var(--brutal-fg);
+}
+
+/* Section Global Styles */
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-tag {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--brutal-fg);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--font-pixel);
+  font-size: 40px;
 }

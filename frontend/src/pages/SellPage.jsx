@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createListing } from '../api/sellApi';
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +21,8 @@ export default function SellPage() {
     current_price: '',
     description: ''
   });
+
+  const [imageUrls, setImageUrls] = useState(['']);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -59,7 +62,7 @@ export default function SellPage() {
     setLoading(true);
     setError(null);
     try {
-      const payload = { ...formData };
+      const payload = { ...formData, image_urls: imageUrls.filter(url => url.trim() !== '') };
       
       // If it's an accessory, we append the accessory type to category for filtering
       if (isAccessory) {
@@ -167,6 +170,46 @@ export default function SellPage() {
                   onChange={handleInputChange} 
                   required
                 ></textarea>
+              </div>
+
+              <div className="form-group" style={{ marginTop: '24px' }}>
+                <label className="sell-form-label">Image URLs</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {imageUrls.map((url, index) => (
+                    <div key={index} style={{ display: 'flex', gap: '8px' }}>
+                      <input 
+                        type="url" 
+                        className="wireframe-input" 
+                        placeholder="https://example.com/image.jpg" 
+                        value={url} 
+                        onChange={(e) => {
+                          const newUrls = [...imageUrls];
+                          newUrls[index] = e.target.value;
+                          setImageUrls(newUrls);
+                        }} 
+                        style={{ flex: 1 }}
+                      />
+                      {imageUrls.length > 1 && (
+                        <button 
+                          type="button" 
+                          onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== index))}
+                          style={{ background: 'var(--brutal-fg)', color: 'var(--brutal-light)', border: 'none', padding: '0 16px', cursor: 'pointer', borderRadius: 'var(--brutal-radius)' }}
+                          aria-label="Remove image"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button 
+                    type="button" 
+                    className="wireframe-btn"
+                    onClick={() => setImageUrls([...imageUrls, ''])}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', marginTop: '4px' }}
+                  >
+                    <Plus size={16} /> ADD ANOTHER IMAGE
+                  </button>
+                </div>
               </div>
             </div>
 
