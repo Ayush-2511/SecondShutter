@@ -14,13 +14,9 @@ const PORT = process.env.PORT || 5000;
 // ─── MIDDLEWARE ──────────────────────────────────────────────────────────────
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    // and allow any localhost origin for development
-    if (!origin || origin.startsWith('http://localhost:')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    // Allow all origins dynamically (required when credentials: true is set)
+    // In a strict production environment, you could validate against process.env.ALLOWED_ORIGINS
+    callback(null, true);
   },
   credentials: true,
 }));
